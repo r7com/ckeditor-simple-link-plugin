@@ -1,94 +1,110 @@
-﻿CKEDITOR.dialog.add("simplelinkDialog", function(editor) {
-	return {
-		allowedContent: "a[href,target]",
-		title: "Inserir Link",
-		minWidth: 550,
-		minHeight: 100,
-		resizable: CKEDITOR.DIALOG_RESIZE_NONE,
-		contents:[{
-			id: "SimpleLink",
-			label: "SimpleLink",
-			elements:[{
-				type: "text",
-				label: "URL",
-				id: "edp-URL",
-				validate: CKEDITOR.dialog.validate.notEmpty( "url não pode ser vazia" ),
-        setup: function( element ) {
-        	var href = element.getAttribute("href");
-        	var isExternalURL = /^(http|https):\/\//;
-        	if(href) {
-        			if(!isExternalURL.test(href)) {
-        				href = "http://" + href;
-        			}
-	            this.setValue(href);
-	        }
+CKEDITOR.dialog.add("simplelinkDialog", function(editor) {
+  return {
+    allowedContent: "a[href,target]",
+    title: "Inserir Link",
+    minWidth: 550,
+    minHeight: 100,
+    resizable: CKEDITOR.DIALOG_RESIZE_NONE,
+    contents: [{
+      id: "SimpleLink",
+      label: "SimpleLink",
+      elements: [{
+        type: "text",
+        label: "URL",
+        id: "edp-URL",
+        validate: CKEDITOR.dialog.validate.notEmpty("url não pode ser vazia"),
+        setup: function(element) {
+          var href = element.getAttribute("href");
+          var isExternalURL = /^(http|https):\/\//;
+          if (href) {
+            if (!isExternalURL.test(href)) {
+              href = "http://" + href;
+            }
+            this.setValue(href);
+          }
         },
         commit: function(element) {
-        	var href = this.getValue();
-        	var isExternalURL = /^(http|https):\/\//;
-        	if(href) {
-        			if(!isExternalURL.test(href)) {
-        				href = "http://" + href;
-        			}
-	            element.setAttribute("href", href);
-	            if(!element.getText()) {
-        				element.setText(this.getValue());
-        			}
-	        }        	
-        }				
-			}, {
-				type: "text",
-				label: "Text to display",
-				id: "edp-text-display",
-        setup: function( element ) {
-            this.setValue( element.getText() );
+          var href = this.getValue();
+          var isExternalURL = /^(http|https):\/\//;
+          if (href) {
+            if (!isExternalURL.test(href)) {
+              href = "http://" + href;
+            }
+            element.setAttribute("href", href);
+            if (!element.getText()) {
+              element.setText(this.getValue());
+            }
+          }
+        }
+      }, {
+        type: "text",
+        label: "Text to display",
+        id: "edp-text-display",
+        setup: function(element) {
+          this.setValue(element.getText());
         },
         commit: function(element) {
-        	var currentValue = this.getValue();
-        	if(currentValue !== "" && currentValue !== null) {
-	        	element.setText(currentValue);
-	        }
-        }	
-			}, {
-				type: "html",
-				html: "<p>O link vai ser aberto em outra tab.</p>"
-			}]
-		}],
-		onShow: function() {
-			var selection = editor.getSelection();
-			var selector = selection.getStartElement()
-			var element;
-			
-			if(selector) {
-				 element = selector.getAscendant( 'a', true );
-			}
-			
-			if ( !element || element.getName() != 'a' ) {
-				element = editor.document.createElement( 'a' );
-				element.setAttribute("target","_blank");
-				if(selection) {
-					element.setText(selection.getSelectedText());
-				}
-                this.insertMode = true;
-			}
-			else {
-				this.insertMode = false;
-			}
-			
-			this.element = element;
+          var currentValue = this.getValue();
+          if (currentValue !== "" && currentValue !== null) {
+            element.setText(currentValue);
+          }
+        }
+      },
+      {
+        type: "text",
+        label: "_target",
+        id: "edp-text-target",
+        setup: function(element) {
+          this.setValue('_blank');
+        },
+        commit: function(element) {
+          var currentValue = this.getValue();
+          if (currentValue !== "" && currentValue !== null) {
+            element.setAttribute('_target', currentValue);
+          } else {
+            element.setAttribute('_target', '_blank');
+          }
+        }
+      },
+      {
+        type: "html",
+        html: "<p>O link vai ser aberto em outra tab.</p>"
+      }]
+    }],
+    onShow: function() {
+      var selection = editor.getSelection();
+      var selector = selection.getStartElement();
+      var element;
 
-			
-			this.setupContent(this.element);
-		},
-		onOk: function() {
-			var dialog = this;
-			var anchorElement = this.element;
-			
-			this.commitContent(this.element);
+      if (selector) {
+        element = selector.getAscendant('a', true);
+      }
 
-			if(this.insertMode) {
-				editor.insertElement(this.element);
-			}
-		}
-	};
+      if (!element || element.getName() != 'a') {
+        element = editor.document.createElement('a');
+
+        if (selection) {
+          element.setText(selection.getSelectedText());
+        }
+        this.insertMode = true;
+      } else {
+        this.insertMode = false;
+      }
+
+      this.element = element;
+
+
+      this.setupContent(this.element);
+    },
+    onOk: function() {
+      var dialog = this;
+      var anchorElement = this.element;
+
+      this.commitContent(this.element);
+
+      if (this.insertMode) {
+        editor.insertElement(this.element);
+      }
+    }
+  };
 });

@@ -34,8 +34,8 @@
 	            if(!element.getText()) {
         				element.setText(this.getValue());
         			}
-	        }        	
-        }				
+	        }
+        }
 			}, {
 				type: "text",
 				label: "Text to display",
@@ -48,21 +48,18 @@
         	if(currentValue !== "" && currentValue !== null) {
 	        	element.setText(currentValue);
 	        }
-        }	
-			}, {
-				type: "html",
-				html: "<p>The Link will be opened in another tab.</p>"
+        }
 			}]
 		}],
 		onShow: function() {
 			var selection = editor.getSelection();
 			var selector = selection.getStartElement()
 			var element;
-			
+
 			if(selector) {
 				 element = selector.getAscendant( 'a', true );
 			}
-			
+
 			if ( !element || element.getName() != 'a' ) {
 				element = editor.document.createElement( 'a' );
 				element.setAttribute("target","_blank");
@@ -74,16 +71,16 @@
 			else {
 				this.insertMode = false;
 			}
-			
+
 			this.element = element;
 
-			
+
 			this.setupContent(this.element);
 		},
 		onOk: function() {
 			var dialog = this;
 			var anchorElement = this.element;
-			
+
 			this.commitContent(this.element);
 
 			if(this.insertMode) {

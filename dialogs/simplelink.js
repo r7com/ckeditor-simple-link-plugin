@@ -1,7 +1,7 @@
 CKEDITOR.dialog.add("simplelinkDialog", function(editor) {
   return {
     allowedContent: "a[href,target]",
-    title: "Insert Link",
+    title: "Inserir Link",
     minWidth: 550,
     minHeight: 100,
     resizable: CKEDITOR.DIALOG_RESIZE_NONE,
@@ -12,7 +12,7 @@ CKEDITOR.dialog.add("simplelinkDialog", function(editor) {
         type: "text",
         label: "URL",
         id: "edp-URL",
-        validate: CKEDITOR.dialog.validate.notEmpty("url cannot be empty."),
+        validate: CKEDITOR.dialog.validate.notEmpty("url não pode ser vazia"),
         setup: function(element) {
           var href = element.getAttribute("href");
           var isExternalURL = /^(http|https):\/\//;
@@ -49,6 +49,24 @@ CKEDITOR.dialog.add("simplelinkDialog", function(editor) {
             element.setText(currentValue);
           }
         }
+      },
+      {
+        type: "text",
+        label: "_target",
+        id: "edp-text-target",
+        setup: function(element) {
+          this.setValue('_blank');
+        },
+        commit: function(element) {
+          var currentValue = this.getValue();
+          if (currentValue !== "" && currentValue !== null) {
+            element.setAttribute('_target', currentValue);
+          } else {
+            element.setAttribute('_target', '_blank');
+          }
+        }
+      },
+      {
       }]
     }],
     onShow: function() {
@@ -62,7 +80,7 @@ CKEDITOR.dialog.add("simplelinkDialog", function(editor) {
 
       if (!element || element.getName() != 'a') {
         element = editor.document.createElement('a');
-        element.setAttribute("target", "_blank");
+
         if (selection) {
           element.setText(selection.getSelectedText());
         }

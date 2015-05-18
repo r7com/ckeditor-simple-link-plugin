@@ -1,4 +1,12 @@
 CKEDITOR.dialog.add("simplelinkDialog", function(editor) {
+  editor.on('doubleclick', function (evt) {
+    var element = evt.data.element;
+    if ( element.is( 'a' ) ) {
+      evt.data.dialog = 'simplelinkDialog';
+      evt.data.link = element;
+    }
+  }, null, null, 0);
+
   return {
     allowedContent: "a[href,target]",
     title: "Inserir Link",
@@ -51,24 +59,20 @@ CKEDITOR.dialog.add("simplelinkDialog", function(editor) {
         }
       },
       {
-        type: "text",
+        type: "select",
         label: "_target",
         id: "edp-text-target",
+        items: [
+          ['Mesma janela', '_self'],
+          ['Outra janela', '_blank']
+        ],
         setup: function(element) {
-          this.setValue('_blank');
+          this.setValue('_self');
         },
         commit: function(element) {
           var currentValue = this.getValue();
-          if (currentValue !== "" && currentValue !== null) {
-            element.setAttribute('_target', currentValue);
-          } else {
-            element.setAttribute('_target', '_blank');
-          }
+          element.setAttribute('_target', currentValue);
         }
-      },
-      {
-        type: "html",
-        html: "<p>O link vai ser aberto em outra tab.</p>"
       }]
     }],
     onShow: function() {
@@ -92,7 +96,6 @@ CKEDITOR.dialog.add("simplelinkDialog", function(editor) {
       }
 
       this.element = element;
-
 
       this.setupContent(this.element);
     },
